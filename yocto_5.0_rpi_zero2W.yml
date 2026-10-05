@@ -1,0 +1,36 @@
+header:
+  version: 14
+
+machine: raspberrypi0-2w-64
+distro: poky
+
+target:
+  - core-image-minimal
+
+repos:
+  poky:
+    url: https://github.com/yoctoproject/poky.git
+    branch: scarthgap
+    path: poky
+    layers:
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
+  meta_openembedded:
+    url: https://github.com/openembedded/meta-openembedded.git
+    branch: scarthgap
+    path: meta-openembedded
+    layers:
+      meta-oe:
+      meta-python:
+  meta_raspberrypi:
+    url: https://github.com/agherzan/meta-raspberrypi.git
+    branch: scarthgap
+    path: meta_raspberrypi
+
+local_conf_header:
+  standard: |
+    RPI_USE_U_BOOT = "1"
+    ENABLE_UART = "1"
+    IMAGE_FSTYPES = "wic"
+    EXTRA_IMAGE_FEATURES = "debug-tweaks"
