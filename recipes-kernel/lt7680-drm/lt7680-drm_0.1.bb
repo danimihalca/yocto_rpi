@@ -10,10 +10,13 @@ SRC_URI = " \
     file://lt7680-nv3052-boe395.h \
 "
 
-# scarthgap and older unpack local files into WORKDIR; styhead and newer use UNPACKDIR.
-# S = "${@'${WORKDIR}' if d.getVar('UNPACKDIR') is None else '${UNPACKDIR}'}"
-# TODO: revert to previous generic after finding fix
-S = "${@'${WORKDIR}'}"
+# scarthgap and older unpack local files into WORKDIR; styhead and newer unpack them into
+# UNPACKDIR, which bitbake.conf defines. On scarthgap UNPACKDIR does not exist, so give it a
+# weak default of WORKDIR: it only applies when nothing else defined it, and S then works on
+# both. (The previous inline-python version, ${@'${WORKDIR}' if d.getVar('UNPACKDIR') ...},
+# leaves a literal "${@...}" in S when UNPACKDIR is unset, which is what broke do_unpack.)
+UNPACKDIR ??= "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 RPROVIDES:${PN} += "kernel-module-lt7680-drm"
 

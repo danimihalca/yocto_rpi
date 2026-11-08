@@ -18,5 +18,17 @@ local_conf_header:
   er-tft395: |
     ENABLE_SPI_BUS = "1"
     RPI_KERNEL_DEVICETREE_OVERLAYS:append = " overlays/er-tft395.dtbo"
+    # RPI_KERNEL_DEVICETREE_OVERLAYS only builds and ships the .dtbo; it does not add the
+    # dtoverlay= line to config.txt, so without this the overlay is never loaded.
+    ER_TFT395_OVERLAY ?= "er-tft395"
+    ER_TFT395_OVERLAY:raspberrypi0-2w-64 ?= "er-tft395,speed=20000000"
+    RPI_EXTRA_CONFIG:append = "\ndtoverlay=${ER_TFT395_OVERLAY}\n"
+
+    # Text console on the panel. console=tty1 sends kernel messages and the login prompt to the
+    # LT7680 framebuffer; the big Terminus font (needs CONFIG_FONT_TER16x32, see lt7680-drm.cfg)
+    # gives 45x22 characters instead of an unreadable 90x45 on the 720x720 panel.
+    # Set ER_TFT395_FBCON_ARGS = "" to turn this off, or use "fbcon=font:VGA8x16" for small text.
+    ER_TFT395_FBCON_ARGS ?= "console=tty1 fbcon=font:TER16x32"
+    CMDLINE:append = " ${ER_TFT395_FBCON_ARGS}"
     IMAGE_INSTALL:append = " lt7680-drm"
     KERNEL_MODULE_AUTOLOAD:append = " lt7680-drm"

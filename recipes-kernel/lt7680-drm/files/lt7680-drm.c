@@ -825,6 +825,13 @@ static int lt7680_probe(struct spi_device *spi)
 #endif
 	lt->spi = spi;
 	lt->panel = of_device_get_match_data(dev);
+	if (!lt->panel) {
+		/* bound through the spi_device_id table (spi: modalias) instead of the OF table */
+		const struct spi_device_id *id = spi_get_device_id(spi);
+
+		if (id)
+			lt->panel = (const struct lt7680_panel_cfg *)id->driver_data;
+	}
 	lt->pageflip = pageflip;
 
 	lt->reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
@@ -941,7 +948,15 @@ static const struct of_device_id lt7680_of_match[] = {
 };
 MODULE_DEVICE_TABLE(of, lt7680_of_match);
 
+/*
+ * The SPI core derives the device modalias from the part of the first DT compatible after the
+ * comma ("eastrising,er-tft3.95-1" -> "er-tft3.95-1") and warns at registration when a
+ * compatible in the OF table has no matching spi_device_id ("SPI driver ... has no
+ * spi_device_id for ..."). It also autoloads modules through the spi: alias, so list every
+ * OF compatible's stripped name here.
+ */
 static const struct spi_device_id lt7680_spi_id[] = {
+	{ "er-tft3.95-1", (kernel_ulong_t)&er_tft395_cfg },
 	{ "lt7680" },
 	{ }
 };
