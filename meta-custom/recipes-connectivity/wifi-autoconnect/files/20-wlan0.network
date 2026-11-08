@@ -1,0 +1,11 @@
+[Match]
+Name=wlan0
+
+[Network]
+DHCP=yes
+# mDNS is handled by avahi-daemon; keep systemd-networkd/resolved out of port 5353
+MulticastDNS=no
+LLMNR=no
+
+[DHCPv4]
+RouteMetric=600
