@@ -1,0 +1,22 @@
+# kas fragment: ER-TFT3.95-1 (LT7680) on Raspberry Pi, poky scarthgap + meta-raspberrypi.
+# Include it from your own kas file:
+#   header:
+#     version: 14
+#     includes:
+#       - repo: meta-er-tft          # the key you give this repo in your `repos:`
+#         file: kas/er-tft395.yml
+header:
+  version: 14
+
+repos:
+  yocto_rpi_kas:
+    # No url/path: this repo is the one containing this file. If you host the layer
+    # elsewhere, set  url: ...  and  branch: ...  here or in your own kas file.
+    # The repo root is the layer.
+
+local_conf_header:
+  er-tft395: |
+    ENABLE_SPI_BUS = "1"
+    RPI_KERNEL_DEVICETREE_OVERLAYS:append = " overlays/er-tft395.dtbo"
+    IMAGE_INSTALL:append = " lt7680-drm"
+    KERNEL_MODULE_AUTOLOAD:append = " lt7680-drm"

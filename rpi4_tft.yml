@@ -1,0 +1,62 @@
+header:
+  version: 14
+  includes:
+    - er-tft395.yml
+
+machine: raspberrypi4-64
+distro: poky
+target: rpi-image
+
+# Pass through from your shell:
+# WIFI_SSID=... WIFI_PSK=... kas build kas-rpi4.yml
+# or
+# export WIFI_SSID='...' WIFI_PSK='...' WIFI_COUNTRY=RO
+# kas-container --runtime-args "-e WIFI_SSID -e WIFI_PSK -e WIFI_COUNTRY" build kas-rpi4.yml
+env:
+  WIFI_SSID: ""
+  WIFI_PSK: ""
+  WIFI_COUNTRY: "RO"
+
+repos:
+  meta-custom:
+    path: meta-custom
+
+
+  poky:
+    url: https://git.yoctoproject.org/poky
+    branch: scarthgap
+    layers:
+      meta:
+      meta-poky:
+
+  meta-openembedded:
+    url: https://git.openembedded.org/meta-openembedded
+    branch: scarthgap
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+
+  meta-raspberrypi:
+    url: https://git.yoctoproject.org/meta-raspberrypi
+    branch: scarthgap
+
+local_conf_header:
+  base: |
+    CONF_VERSION = "2"
+    ENABLE_UART = "1"
+    EXTRA_IMAGE_FEATURES = "debug-tweaks"
+    LICENSE_FLAGS_ACCEPTED += "synaptics-killswitch"
+    DISTRO_FEATURES:append = " systemd usrmerge wifi zeroconf"
+    DISTRO_FEATURES_BACKFILL_CONSIDERED = "sysvinit"
+    VIRTUAL-RUNTIME_init_manager = "systemd"
+    VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
+    PACKAGECONFIG:append:pn-systemd = " networkd"
+    IMAGE_FSTYPES = "wic"
+    hostname:pn-base-files = "rpi4"
+    RPI_USE_U_BOOT = "0"
+    IMAGE_INSTALL:append = " kernel-modules"
+  wifi: |
+    WIFI_SSID ?= ""
+    WIFI_PSK ?= ""
+    WIFI_COUNTRY ?= "RO"
