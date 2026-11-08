@@ -10,6 +10,8 @@ header:
 
 repos:
   yocto_rpi_kas:
+    layers:
+      meta-er-tft395:
     # No url/path: this repo is the one containing this file. If you host the layer
     # elsewhere, set  url: ...  and  branch: ...  here or in your own kas file.
     # The repo root is the layer.
