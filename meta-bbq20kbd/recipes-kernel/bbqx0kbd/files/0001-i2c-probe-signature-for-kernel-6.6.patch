@@ -1,0 +1,28 @@
+diff --git a/source/mod_src/bbqX0kbd_main.c b/source/mod_src/bbqX0kbd_main.c
+index 2246a2e..775370b 100644
+--- a/source/mod_src/bbqX0kbd_main.c
++++ b/source/mod_src/bbqX0kbd_main.c
+@@ -524,7 +524,11 @@ static irqreturn_t bbqX0kbd_irq_handler(int irq, void *dev_id)
+ 
+ 
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
++static int bbqX0kbd_probe(struct i2c_client *client)
++#else
+ static int bbqX0kbd_probe(struct i2c_client *client, const struct i2c_device_id *id)
++#endif
+ {
+ 	struct device *dev = &client->dev;
+ 	struct bbqX0kbd_data *bbqX0kbd_data;
+diff --git a/source/mod_src/bbqX0kbd_main.h b/source/mod_src/bbqX0kbd_main.h
+index 59079bf..44577ec 100644
+--- a/source/mod_src/bbqX0kbd_main.h
++++ b/source/mod_src/bbqX0kbd_main.h
+@@ -18,6 +18,7 @@
+ #include <linux/property.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
++#include <linux/version.h>
+ #include <linux/workqueue.h>
+ #include <linux/ktime.h>
+ 

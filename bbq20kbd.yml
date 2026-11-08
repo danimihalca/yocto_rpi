@@ -1,0 +1,30 @@
+header:
+  version: 11
+
+distro: poky
+target: core-image-base
+
+repos:
+  # The repository holding this file (it contains meta-bbq20kbd)
+  yocto_rpi_kas:
+    layers:
+      meta-bbq20kbd:
+
+local_conf_header:
+  bbq20kbd: |
+    # i2c1 on the 40-pin header (GPIO2/3), slowed down because the keyboard stretches the clock
+    ENABLE_I2C = "1"
+    RPI_EXTRA_CONFIG:append = "\ndtoverlay=i2c-bbqX0kbd\ndtparam=i2c_arm_baudrate=10000\n"
+
+    # driver module + test tools
+    IMAGE_INSTALL:append = " kernel-module-bbqx0kbd i2c-tools evtest"
+
+    # ship the overlay on the boot partition (wic image)
+    IMAGE_FSTYPES = "wic.bz2 wic.bmap"
+    WKS_FILE = "sdimage-raspberrypi.wks"
+    IMAGE_BOOT_FILES:append = " overlays/i2c-bbqX0kbd.dtbo"
+    do_image_wic[depends] += "bbqx0kbd:do_deploy"
+
+  license: |
+    # needed for the Pi WiFi firmware package (Pi 4 and Zero 2 W)
+    LICENSE_FLAGS_ACCEPTED += "synaptics-killswitch"
