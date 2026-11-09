@@ -1,0 +1,8 @@
+[Unit]
+Description=Check LAN server for a RAUC update bundle
+After=network-online.target rauc.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/rpi-ota-update

@@ -20,7 +20,6 @@ local_conf_header:
     IMAGE_INSTALL:append = " bbqx0kbd i2c-tools evtest"
 
     # ship the overlay on the boot partition (wic image)
-    WKS_FILE = "sdimage-raspberrypi.wks"
     IMAGE_BOOT_FILES:append = " overlays/i2c-bbqX0kbd.dtbo"
     do_image_wic[depends] += "bbqx0kbd:do_deploy"
 

@@ -1,0 +1,7 @@
+# short-description: Raspberry Pi 4 SD image with dual rootfs (RAUC A/B) and data partition
+# Fstab entries are provided by base-files (see base-files_%.bbappend), so wic must not touch them.
+
+part /uboot --source bootimg-partition --ondisk mmcblk0 --fstype=vfat --label boot --active --align 4096 --size 64M --no-fstab-update
+part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootA --align 4096 --size 1G --no-fstab-update
+part --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootB --align 4096 --size 1G --no-fstab-update
+part /data --ondisk mmcblk0 --fstype=ext4 --label data --align 4096 --size 512M --no-fstab-update
