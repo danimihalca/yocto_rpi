@@ -39,7 +39,7 @@ fi
 
 saveenv
 
-setenv bootargs "console=tty1 console=serial0,115200 root=/dev/mmcblk0p${rootpart} rootwait rw rootfstype=ext4 rauc.slot=${raucslot}"
+setenv bootargs "console=tty1 fbcon=font:TER16x32 console=serial0,115200 root=/dev/mmcblk0p${rootpart} rootwait rw rootfstype=ext4 rauc.slot=${raucslot}"
 
 load mmc 0:${rootpart} ${kernel_addr_r} /boot/Image
 booti ${kernel_addr_r} - ${fdt_addr}
