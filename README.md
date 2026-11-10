@@ -22,6 +22,8 @@ Generate certificate for RAUC:
 ./scripts/gen-dev-keys.sh
 ```
 
+Update `OTA_SERVER_URL` from `meta-rpi4-rauc/recipes-ota/rpi-ota-update/files/rpi-ota.conf`
+
 Build:
 ```
 export RAUC_BUNDLE_VERSION=1.0.0
