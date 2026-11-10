@@ -32,5 +32,5 @@ local_conf_header:
     # Set ER_TFT395_FBCON_ARGS = "" to turn this off, or use "fbcon=font:VGA8x16" for small text.
     ER_TFT395_FBCON_ARGS ?= "console=tty1 fbcon=font:TER16x32"
     CMDLINE:append = " ${ER_TFT395_FBCON_ARGS}"
-    IMAGE_INSTALL:append = " lt7680-drm"
+    IMAGE_INSTALL:append = " lt7680-drm terminus-font-consolefonts"
     KERNEL_MODULE_AUTOLOAD:append = " lt7680-drm"
