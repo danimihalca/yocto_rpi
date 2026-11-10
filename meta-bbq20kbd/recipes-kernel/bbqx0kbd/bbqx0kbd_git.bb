@@ -49,7 +49,16 @@ do_compile:append() {
 do_install() {
     install -d ${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/extra
     install -m 0644 ${B}/bbqX0kbd.ko ${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/extra/
+
+    install -d ${D}${datadir}/keymaps/i386/qwerty
+    install -m 0644 ${S}/source/mod_src/bbqX0kbd.map ${D}${datadir}/keymaps/i386/qwerty/bbqX0kbd.map
+    install -d ${D}${sysconfdir}
+    printf 'KEYMAP=bbqX0kbd\n' > ${D}${sysconfdir}/vconsole.conf
 }
+
+PACKAGES =+ "${PN}-keymap"
+FILES:${PN}-keymap = "${datadir}/keymaps/i386/qwerty/bbqX0kbd.map ${sysconfdir}/vconsole.conf"
+RDEPENDS:${PN}-keymap = "kbd"
 
 do_deploy() {
     install -d ${DEPLOYDIR}/overlays

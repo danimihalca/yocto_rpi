@@ -17,7 +17,7 @@ local_conf_header:
     RPI_EXTRA_CONFIG:append = "\ndtoverlay=i2c-bbqX0kbd\ndtparam=i2c_arm_baudrate=10000\n"
 
     # driver module + test tools
-    IMAGE_INSTALL:append = " bbqx0kbd i2c-tools evtest"
+    IMAGE_INSTALL:append = " bbqx0kbd bbqx0kbd-keymap i2c-tools evtest"
 
     # ship the overlay on the boot partition (wic image)
     IMAGE_BOOT_FILES:append = " overlays/i2c-bbqX0kbd.dtbo"
