@@ -1,0 +1,25 @@
+# kas fragment: BBQ10/BBQ20 keyboard (i2c_puppet) on a Raspberry Pi.
+# Include it from the product kas file (the repo must be listed under `repos:` there):
+#
+#   header:
+#     version: 14
+#     includes:
+#       - repo: meta-bbq20kbd
+#         file: kas/bbq20kbd.yml
+#
+# Machine, distro, target and license flags are the product's business, not set here.
+header:
+  version: 14
+
+local_conf_header:
+  bbq20kbd: |
+    # i2c1 on the 40-pin header (GPIO2/3), slowed down because the keyboard stretches the clock
+    ENABLE_I2C = "1"
+    RPI_EXTRA_CONFIG:append = "\ndtoverlay=i2c-bbqX0kbd\ndtparam=i2c_arm_baudrate=10000\n"
+
+    # driver module, console keymap (alt / altgr symbols) and test tools
+    IMAGE_INSTALL:append = " bbqx0kbd bbqx0kbd-keymap i2c-tools evtest"
+
+    # ship the overlay (built by the bbqx0kbd recipe) on the boot partition
+    IMAGE_BOOT_FILES:append = " overlays/i2c-bbqX0kbd.dtbo"
+    do_image_wic[depends] += "bbqx0kbd:do_deploy"

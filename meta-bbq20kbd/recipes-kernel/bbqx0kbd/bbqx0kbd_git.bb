@@ -1,13 +1,16 @@
 SUMMARY = "BBQ10/BBQ20 keyboard I2C input driver (i2c_puppet) plus Raspberry Pi overlay"
-DESCRIPTION = "wallComputer/bbqX0kbd_driver kernel module (one 4-line i2c probe() compatibility patch for kernels >= 6.6), built out of tree, \
-plus its i2c1 device tree overlay compiled to a .dtbo and deployed to the boot partition."
+DESCRIPTION = "wallComputer/bbqX0kbd_driver kernel module (original upstream code plus a small i2c probe() compatibility patch for kernels >= 6.6), built out of tree, \
+plus its i2c1 device tree overlay compiled to a .dtbo and deployed to the boot partition, and the console keymap (package bbqx0kbd-keymap)."
 HOMEPAGE = "https://github.com/wallComputer/bbqX0kbd_driver"
 LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=9450224a11928f85794c948d3539a882"
 
-SRC_URI = "git://github.com/wallComputer/bbqX0kbd_driver.git;protocol=https;branch=main \
-           file://0001-i2c-probe-signature-for-kernel-6.6.patch \
-"
+# Original upstream code, unmodified, plus the layer's patch(es) applied on top by do_patch.
+# (A fork can still be used by overriding BBQX0KBD_GIT_URI / BBQX0KBD_LOCAL_PATCHES.)
+BBQX0KBD_GIT_URI ?= "git://github.com/wallComputer/bbqX0kbd_driver.git;protocol=https;branch=main"
+BBQX0KBD_LOCAL_PATCHES ?= "file://0001-i2c-probe-signature-for-kernel-6.6.patch \
+                           file://0002-map-puppet-arrow-keys.patch"
+SRC_URI = "${BBQX0KBD_GIT_URI} ${BBQX0KBD_LOCAL_PATCHES}"
 SRCREV = "3cd0f977e4f266a7eb82bbea8fd7d5aabbdb04f2"
 PV = "0.1+git"
 
@@ -50,6 +53,10 @@ do_install() {
     install -d ${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/extra
     install -m 0644 ${B}/bbqX0kbd.ko ${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/extra/
 
+    # Console keymap. The driver only reports the physical key with LEFTALT / RIGHTALT held;
+    # the symbols (# ( ) _ { } \ [ ] < > & ...) are defined by bbqX0kbd.map. Raspberry Pi OS gets it
+    # from upstream's installer.sh (KMAP= in /etc/default/keyboard); here systemd-vconsole-setup
+    # loads it at boot from /etc/vconsole.conf. Installed in a directory loadkeys searches.
     install -d ${D}${datadir}/keymaps/i386/qwerty
     install -m 0644 ${S}/source/mod_src/bbqX0kbd.map ${D}${datadir}/keymaps/i386/qwerty/bbqX0kbd.map
     install -d ${D}${sysconfdir}
